@@ -5,5 +5,6 @@ from . import views
 app_name = "payments"
 
 urlpatterns = [
-    path("here/", views.dues_list, name="dues_list"),
+    path("pay/<slug:uuid>/", views.make_payment, name="make_payment"),
+    path("verify/<slug:ref>/", views.verify_payment, name="verify_payment"),
 ]

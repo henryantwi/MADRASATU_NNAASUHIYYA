@@ -1,15 +1,17 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
+from payments.models import Payment
 
 from .models import Dues
 
-from payments.models import Payment
-
-from payments.models import Payment
-
+@login_required
 def index(request):
     return render(request, "payments/index.html")
 
+@login_required
 def dues_list(request):
+    payment_status = request.GET.get("payment_status")
     dues = Dues.objects.all()
     user_payments = Payment.objects.filter(user=request.user, is_verified=True)
     paid_dues_ids = user_payments.values_list("dues_id", flat=True)
@@ -25,5 +27,8 @@ def dues_list(request):
             }
         )
 
-    context = {"dues_status": dues_status}
+    context = {
+        "dues_status": dues_status,
+        "payment_status": payment_status,
+    }
     return render(request, "payments/list.html", context)

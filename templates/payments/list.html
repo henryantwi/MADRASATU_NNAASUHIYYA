@@ -15,7 +15,23 @@
       </nav>
     </div><!-- End Page Title -->
 
-    <div class="card">
+    {% if payment_status == 'success' %}
+    <!-- Success Alert -->
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-1"></i>
+        Your Payment was Successful!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% elif payment_status == 'failure' %}
+    <!-- Failure Alert -->
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-octagon me-1"></i>
+        Your payment failed!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <div class="card mt-4">
         <div class="card-body">
           <h5 class="card-title">Default Table</h5>
 

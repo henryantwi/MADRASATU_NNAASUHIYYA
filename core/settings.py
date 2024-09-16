@@ -22,7 +22,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.humanize',
+    "django.contrib.humanize",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -49,9 +49,7 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [
-            BASE_DIR / 'templates'
-        ],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -127,4 +125,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = 'account.CustomUser'
+AUTH_USER_MODEL = "account.CustomUser"
+
+LOGIN_REDIRECT_URL = '/index'
+LOGIN_URL = '/account/login/'
+
+PAYSTACK_PUBLIC_KEY = os.environ.get("PAYSTACK_PUBLIC_KEY")
+PAYSTACK_SECRET_KEY = os.environ.get("PAYSTACK_SECRET_KEY")
+
+# DEYWURO_USERNAME = os.environ.get('DEYWURO_USERNAME')
+# DEYWURO_PASSWORD = os.environ.get('DEYWURO_PASSWORD')
+DEYWURO_USERNAME = "unilovecampusministry"
+DEYWURO_PASSWORD = "bullshit$0200"
+DEYWURO_SOURCE = "UCM - SRID"
