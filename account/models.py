@@ -54,7 +54,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = "Accounts"
 
     def get_full_name(self) -> str:
-        return f"{self.first_name.capitalize()} {self.last_name."
+        return f"{self.first_name.capitalize()} {self.last_name.capitalize()} Hmm"
 
     def __str__(self):
         return str(self.get_full_name())
