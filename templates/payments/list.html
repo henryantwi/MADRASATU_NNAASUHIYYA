@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+{% block title %}MADRASATUNNAASUHIYYA - Home{% endblock %}
+{% block content %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Home</h1>
+      <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dues:index' %}"><i class="bi bi-house-door"></i></a></li>
+            <li class="breadcrumb-item active">Dues List</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Default Table</h5>
+
+          <!-- Default Table -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Month</th>
+                <th scope="col">Status</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Date Paid</th>
+              </tr>
+            </thead>
+            
+            <tbody>
+              {% for item in dues_status %}
+              <tr class="{% if not item.is_paid %}table-danger{% endif %}">
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ item.due.month|date:"F" }}</td>
+                <td>
+                  {% if item.is_paid %}
+                    <span class="badge bg-success">Paid</span>
+                  {% else %}
+                    <span class="badge bg-danger">Unpaid</span>
+                  {% endif %}
+                </td>
+                <td>GH₵ {{ item.due.amount }}</td>
+                <td>
+                  {% if item.is_paid %}
+                    {{ item.payment.payment_date|date:"Y-m-d" }}
+                  {% else %}
+                    <button type="button" class="btn btn-outline-danger btn-sm pay-now-btn" data-due-id="{{ item.due.id }}">Pay Now</button>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+
+          </table>
+          <!-- End Default Table Example -->
+        </div>
+      </div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const payNowButtons = document.querySelectorAll('.pay-now-btn');
+    payNowButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const dueId = this.getAttribute('data-due-id');
+            window.location.href = `/payments/pay/${dueId}/`;
+        });     
+    });
+});
+</script>
+{% endblock %}

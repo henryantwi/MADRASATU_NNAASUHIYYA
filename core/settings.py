@@ -29,8 +29,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "account",
     "dues",
+    "account",
+    "payments",
 ]
 
 MIDDLEWARE = [
@@ -71,13 +72,8 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres.lebkfdabametsukvaegf",
-        # "PASSWORD": os.environ.get("MADRASATU_DB_PASS"),
-        "PASSWORD": "4m7hwz4CLYAlvgEW",
-        "HOST": "aws-0-us-east-1.pooler.supabase.com",
-        "PORT": "6543",
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -130,3 +126,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = 'account.CustomUser'

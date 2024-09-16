@@ -40,7 +40,7 @@
     <div class="d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo d-flex align-items-center">
         <img src="{% static 'assets/img/logo.png' %}" alt="">
-        <span class="d-none d-lg-block">MADRASATU.NNAASUHIYYA</span>
+        <span class="d-none d-lg-block">MadrasatuPay</span>
       </a>
     </div><!-- End Logo -->
 
@@ -199,20 +199,20 @@
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="{% static 'assets/img/profile-img.jpg' %}" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+            <span class="d-none d-md-block dropdown-toggle ps-2">{{ request.user.last_name|slice:":1"|capfirst }}. {{ request.user.first_name|title }}</span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6>Kevin Anderson</h6>
-              <span>Web Designer</span>
+              <h6>{{ request.user.first_name|title }} {{ request.user.last_name|title }}</h6>
+              <span>{% if request.user.is_staff %}Staff{% else %}Member{% endif %}</span>
             </li>
             <li>
               <hr class="dropdown-divider">
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+              <a class="dropdown-item d-flex align-items-center" href="">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
               </a>
@@ -222,7 +222,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+              <a class="dropdown-item d-flex align-items-center" href="">
                 <i class="bi bi-gear"></i>
                 <span>Account Settings</span>
               </a>
@@ -256,7 +256,7 @@
 
   </header><!-- End Header -->
 
- {% block content %}{% endblock %}
+ <div class="container mb-5">{% block content %}{% endblock %}</div>
   
 
   <!-- ======= Footer ======= -->
@@ -270,7 +270,7 @@
       <!-- Licensing information: https://bootstrapmade.com/license/ -->
       <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
       Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-    </div>
+    </div>    
   </footer>
   <!-- End Footer -->
 
