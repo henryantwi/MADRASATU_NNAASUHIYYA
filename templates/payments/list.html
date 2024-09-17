@@ -1,29 +1,28 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% load static %}
-{% block title %}MADRASATUNNAASUHIYYA - Home{% endblock %}
+{% block title %}MADRASATUNNAASUHIYYA - Dues Overview{% endblock %}
 {% block content %}
 <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Home</h1>
-      <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'dues:index' %}"><i class="bi bi-house-door"></i></a></li>
-            <li class="breadcrumb-item active">Dues List</li>
-        </ol>
-      </nav>
+        <h1>Dues Overview</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dues:index' %}"><i class="bi bi-house-door"></i></a></li>
+                <li class="breadcrumb-item active">Dues Overview</li>
+            </ol>
+        </nav>
     </div><!-- End Page Title -->
 
+    <!-- Payment Status Alerts -->
     {% if payment_status == 'success' %}
-    <!-- Success Alert -->
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="bi bi-check-circle me-1"></i>
-        Your Payment was Successful!
+        Your payment was successful!
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% elif payment_status == 'failure' %}
-    <!-- Failure Alert -->
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <i class="bi bi-exclamation-octagon me-1"></i>
         Your payment failed!
@@ -31,50 +30,56 @@
     </div>
     {% endif %}
 
+    <!-- Dues Table Card -->
     <div class="card mt-4">
         <div class="card-body">
-          <h5 class="card-title">Default Table</h5>
+            <h5 class="card-title">Dues Overview</h5>
 
-          <!-- Default Table -->
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Month</th>
-                <th scope="col">Status</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Date Paid</th>
-              </tr>
-            </thead>
-            
-            <tbody>
-              {% for item in dues_status %}
-              <tr class="{% if not item.is_paid %}table-danger{% endif %}">
-                <th scope="row">{{ forloop.counter }}</th>
-                <td>{{ item.due.month|date:"F" }}</td>
-                <td>
-                  {% if item.is_paid %}
-                    <span class="badge bg-success">Paid</span>
-                  {% else %}
-                    <span class="badge bg-danger">Unpaid</span>
-                  {% endif %}
-                </td>
-                <td>GH₵ {{ item.due.amount }}</td>
-                <td>
-                  {% if item.is_paid %}
-                    {{ item.payment.payment_date|date:"Y-m-d" }}
-                  {% else %}
-                    <button type="button" class="btn btn-outline-danger btn-sm pay-now-btn" data-due-id="{{ item.due.id }}">Pay Now</button>
-                  {% endif %}
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-
-          </table>
-          <!-- End Default Table Example -->
+            <!-- Responsive Table -->
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Month</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Date Paid</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in dues_status %}
+                        <tr class="{% if not item.is_paid %}table-danger{% endif %}">
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ item.due.month|date:"F Y" }}</td> <!-- Updated date format -->
+                            <td>
+                                {% if item.is_paid %}
+                                <span class="badge bg-success">Paid</span>
+                                {% else %}
+                                <span class="badge bg-danger">Unpaid</span>
+                                {% endif %}
+                            </td>
+                            <td>GH₵ {{ item.due.amount }}</td>
+                            <td>
+                                {% if item.is_paid %}
+                                {{ item.payment.payment_date|date:"d M Y" }} <!-- Updated date format -->
+                                {% else %}
+                                <button type="button" class="btn btn-outline-danger btn-sm pay-now-btn" data-due-id="{{ item.due.id }}">
+                                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    Pay Now
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- End Responsive Table -->
         </div>
-      </div>
+    </div>
+    <!-- End Dues Table Card -->
+
 </main>
 
 <script>
@@ -83,8 +88,15 @@ document.addEventListener('DOMContentLoaded', function() {
     payNowButtons.forEach(button => {
         button.addEventListener('click', function() {
             const dueId = this.getAttribute('data-due-id');
+            const spinner = this.querySelector('.spinner-border');
+            
+            // Show loading spinner
+            spinner.classList.remove('d-none');
+            this.disabled = true;
+
+            // Redirect to the payment page
             window.location.href = `/payments/pay/${dueId}/`;
-        });     
+        });
     });
 });
 </script>

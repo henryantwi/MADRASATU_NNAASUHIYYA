@@ -5,24 +5,92 @@
 {% block content %}
 <main id="main" class="main">
 
-    <div class="pagetitle">
-      <h1>Home</h1>
-      <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'dues:index' %}"><i class="bi bi-house-door"></i></a></li>
-          </ol>
-      </nav>
-    </div><!-- End Page Title -->
-
-
-    <div class="p-4 p-md-5 mt-4 mb-5 rounded text-body-emphasis bg-body-secondary">
-        <div class="col-lg-12 px-0 text-center">
-          <h1 class="display-4 fst-italic">Welcome, {{ request.user.first_name|title }}!</h1>
-          <hr class="my-4">
-          <p class="lead my-3">Experience seamless and secure payments with Madrasatu Pay.</p>
-          <p class="lead my-3">Track your monthly dues effortlessly and stay on top of your finances.</p>
-          <p class="lead mb-4">Join us in making payments easier and more convenient.</p>
-          <a class="btn btn-success btn-lg" href="{% url 'dues:dues_list' %}" role="button">Proceed</a>
+    <!-- Hero Section -->
+    <section class="hero text-center mt-4 py-5">
+        <div class="container">
+            <!-- Greeting -->
+            <h1 id="greeting" class="display-3 mb-3"></h1>
+            <p class="lead mb-4">Welcome to Madrasatu Nnaasuhiyyah's Dues Payment Portal. We make managing and tracking your dues simple and secure.</p>
+            <a class="btn btn-primary btn-lg" href="{% url 'dues:dues_list' %}" role="button">View Your Dues</a>
         </div>
+    </section>
+    <!-- End Hero Section -->
+
+    <!-- Info Section -->
+    <section class="info text-center py-5 bg-light">
+        <div class="container">
+            <h2 class="fw-bold mb-4">Why Use This System?</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-4 mb-4">
+                    <div class="info-item p-4 border rounded">
+                        <i class="bi bi-wallet2 display-4 mb-3"></i>
+                        <h4 class="fw-bold">Effortless Payments</h4>
+                        <p>Manage and make payments with ease using our streamlined platform.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="info-item p-4 border rounded">
+                        <i class="bi bi-calendar-check display-4 mb-3"></i>
+                        <h4 class="fw-bold">Track Your Dues</h4>
+                        <p>Keep track of your monthly dues and payments with real-time updates.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="info-item p-4 border rounded">
+                        <i class="bi bi-person-lines-fill display-4 mb-3"></i>
+                        <h4 class="fw-bold">User-Friendly Interface</h4>
+                        <p>Enjoy a clean and intuitive interface designed for seamless interaction.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Info Section -->
+
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get current local time
+    const currentHour = new Date().getHours();
+    let greeting;
+
+    // Determine the greeting based on the current hour
+    if (currentHour < 12) {
+        greeting = "Good Morning";
+    } else if (currentHour < 18) {
+        greeting = "Good Afternoon";
+    } else {
+        greeting = "Good Evening";
+    }
+
+    // Update greeting in the DOM
+    document.getElementById('greeting').textContent = `${greeting}, {{ request.user.first_name|title }}!`;
+});
+</script>
+
+<style>
+/* Simple and elegant CSS */
+.hero {
+    background-color: #ffffff;
+    color: #333;
+}
+
+.info-item {
+    background-color: #ffffff;
+    border-color: #dee2e6;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.info-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+</style>
+
 {% endblock %}
