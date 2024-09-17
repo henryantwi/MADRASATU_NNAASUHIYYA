@@ -1,24 +1,26 @@
 import os
 from pathlib import Path
+import dj_database_url
 
-from decouple import config
+from environ import Env
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+env = Env()
+Env.read_env()
+
+ENVIRONMENT = env("ENVIRONMENT", default="production")
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+SECRET_KEY = env("SECRET_KEY")
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(9z58p10asu(s!u*70r#*b(yw!7dm)p$(cy31^nm7-24@vg+62"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if ENVIRONMENT == "development":
+    DEBUG = True
+else:
+    DEBUG = False
 
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
+    '*'
 ]
 
 
@@ -35,10 +37,12 @@ INSTALLED_APPS = [
     "dues",
     "account",
     "payments",
+    "admin_honeypot",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -78,6 +82,11 @@ DATABASES = {
     }
 }
 
+POSTGRES_LOCALLY = True
+
+if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == "True":
+    DATABASES["default"] = dj_database_url.parse(env('DATABASE_URL'))
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -115,11 +124,11 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
-
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = "media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type
@@ -130,14 +139,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "account.CustomUser"
 
-LOGIN_REDIRECT_URL = '/index'
-LOGIN_URL = '/account/login/'
+LOGIN_REDIRECT_URL = "/index"
+LOGIN_URL = "/account/login/"
 
 PAYSTACK_PUBLIC_KEY = os.environ.get("PAYSTACK_PUBLIC_KEY")
 PAYSTACK_SECRET_KEY = os.environ.get("PAYSTACK_SECRET_KEY")
 
-# DEYWURO_USERNAME = os.environ.get('DEYWURO_USERNAME')
-# DEYWURO_PASSWORD = os.environ.get('DEYWURO_PASSWORD')
-DEYWURO_USERNAME = "unilovecampusministry"
-DEYWURO_PASSWORD = "bullshit$0200"
-DEYWURO_SOURCE = "UCM - SRID"
+DEYWURO_USERNAME = env("DEYWURO_USERNAME")
+DEYWURO_PASSWORD = env("DEYWURO_PASSWORD")
+DEYWURO_SOURCE = env("DEYWURO_SOURCE")
+
+ACCOUNT_USERNAME_BLACKLIST = ["admin", "accounts", "profile", "payments", "theman"]
