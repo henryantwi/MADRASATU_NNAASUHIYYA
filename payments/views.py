@@ -45,7 +45,7 @@ def verify_payment(request, ref):
     if verified:
         sms = send_sms_get(
             [request.user.phone_number],
-            f"Hello {request.user.first_name.capitalize()}, your payment of GH₵ {payment.dues.amount} for {payment.dues.month.strftime('%B')} has been successfully processed.",
+            f"Hello {request.user.first_name.capitalize()}, your payment of GHS {payment.dues.amount} for {payment.dues.month.strftime('%B')} has been successfully processed.",
         )
         ic(sms)
         return redirect(f"{reverse('dues:dues_list')}?payment_status=success")
