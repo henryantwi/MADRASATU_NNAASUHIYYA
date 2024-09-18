@@ -16,13 +16,15 @@ from django.views.decorators.csrf import csrf_protect
 from icecream import ic
 
 from .forms import NotificationSettingsForm, ProfileUpdateForm
-from .models import Profile
+from .models import Profile, CustomUser
 
-User = settings.AUTH_USER_MODEL
+User = get_user_model()
+
 
 @login_required
 def faq_view(request):
     return render(request, "account/faq.html")
+
 
 def login_view(request):
     if request.method == "POST":
@@ -42,6 +44,7 @@ def login_view(request):
             messages.error(request, "Invalid email or password.")
 
     return render(request, "account/login.html")
+
 
 @csrf_protect
 def register_view(request):
@@ -76,14 +79,16 @@ def register_view(request):
             return render(request, "account/register.html")
 
         try:
-            user = settings.AUTH_USER_MODEL.objects.create_user(
+            user = CustomUser.objects.create_user(
                 first_name=first_name.capitalize(),
                 last_name=last_name.capitalize(),
                 email=email,
                 phone_number=phone_number,
                 password=password,
             )
-            messages.success(request, "Your account has been created successfully. Login")
+            messages.success(
+                request, "Your account has been created successfully. Login"
+            )
             return redirect("account:login")
         except Exception as e:
             messages.error(request, f"Error creating account: {e}")
@@ -91,11 +96,13 @@ def register_view(request):
 
     return render(request, "account/register.html")
 
+
 @login_required
 def sign_out(request):
     logout(request)
     messages.success(request, "You have been logged out successfully.")
     return redirect("account:login")
+
 
 @login_required
 def profile_view(request):
@@ -115,18 +122,18 @@ def profile_view(request):
                 messages.success(request, "Profile updated successfully!")
                 return redirect("account:profile")
             else:
-                for error in profile_form.errors:
-                    messages.error(request, error)
+                ic(profile_form.errors)  # Print profile form errors
 
         elif "update_notifications" in request.POST:
-            notifications_form = NotificationSettingsForm(request.POST, instance=profile)
+            notifications_form = NotificationSettingsForm(
+                request.POST, instance=profile
+            )
             if notifications_form.is_valid():
                 notifications_form.save()
                 messages.success(request, "Notification settings updated successfully!")
                 return redirect("account:profile")
             else:
-                for error in notifications_form.errors:
-                    messages.error(request, error)
+                ic(notifications_form.errors)  # Print notifications form errors
 
         elif "change_password" in request.POST:
             password_form = PasswordChangeForm(user, request.POST)
@@ -136,8 +143,7 @@ def profile_view(request):
                 messages.success(request, "Password changed successfully!")
                 return redirect("account:profile")
             else:
-                for error in password_form.errors:
-                    messages.error(request, error)
+                ic(password_form.errors)  # Print password form errors
 
     return render(
         request,
