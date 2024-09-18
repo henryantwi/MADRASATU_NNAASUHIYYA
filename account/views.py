@@ -16,10 +16,7 @@ from django.views.decorators.csrf import csrf_protect
 from icecream import ic
 
 from .forms import NotificationSettingsForm, ProfileUpdateForm
-from .models import Profile, CustomUser
-
-User = get_user_model()
-
+from .models import CustomUser, Profile
 
 @login_required
 def faq_view(request):
@@ -27,6 +24,7 @@ def faq_view(request):
 
 
 def login_view(request):
+    User = get_user_model()
     if request.method == "POST":
         email = request.POST["email"]
         password = request.POST["password"]
@@ -48,6 +46,7 @@ def login_view(request):
 
 @csrf_protect
 def register_view(request):
+    User = get_user_model()
     if request.method == "POST":
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
