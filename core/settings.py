@@ -16,7 +16,7 @@ SECRET_KEY = env("SECRET_KEY")
 
 if ENVIRONMENT == "development":
     DEBUG = True
-elif ENVIRONMENT == 'production':
+elif ENVIRONMENT == "production":
     DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     "account",
     "payments",
     "admin_honeypot",
+    "cloudinary_storage",
+    "cloudinary",
 ]
 
 MIDDLEWARE = [
@@ -119,7 +121,17 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
+
+if ENVIRONMENT == "production" or POSTGRES_LOCALLY == True:
+    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+else:
+    MEDIA_ROOT = BASE_DIR / "media"
+
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": env("CLOUD_NAME"),
+    "API_KEY": env("CLOUD_API_KEY"),
+    "API_SECRET": env("CLOUD_API_SECRET"),
+}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
