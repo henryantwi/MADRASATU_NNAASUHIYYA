@@ -18,6 +18,7 @@ from icecream import ic
 from .forms import NotificationSettingsForm, ProfileUpdateForm
 from .models import CustomUser, Profile
 
+
 @login_required
 def faq_view(request):
     return render(request, "account/faq.html")
