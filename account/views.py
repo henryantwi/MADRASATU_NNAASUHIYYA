@@ -78,13 +78,14 @@ def register_view(request):
             return render(request, "account/register.html")
 
         try:
-            user = CustomUser.objects.create_user(
+            user = User.objects.create_user(
                 first_name=first_name.capitalize(),
                 last_name=last_name.capitalize(),
                 email=email,
                 phone_number=phone_number,
                 password=password,
             )
+            user.save()
             messages.success(
                 request, "Your account has been created successfully. Login"
             )
