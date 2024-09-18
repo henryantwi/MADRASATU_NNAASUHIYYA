@@ -19,7 +19,7 @@ def make_payment(request, uuid):
     if existing_payment:
         # Redirect or show a message indicating the payment is already completed
         return render(
-            request, "payment_already_done.html", {"payments": existing_payment}
+            request, "payments/payment_already_done.html", {"payments": existing_payment}
         )
 
     payment = Payment.objects.create(user=request.user, dues=dues)
