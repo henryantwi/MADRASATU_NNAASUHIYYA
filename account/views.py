@@ -18,7 +18,7 @@ from icecream import ic
 from .forms import NotificationSettingsForm, ProfileUpdateForm
 from .models import Profile
 
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 
 @login_required
 def faq_view(request):
@@ -76,7 +76,7 @@ def register_view(request):
             return render(request, "account/register.html")
 
         try:
-            user = User.objects.create_user(
+            user = settings.AUTH_USER_MODEL.objects.create_user(
                 first_name=first_name.capitalize(),
                 last_name=last_name.capitalize(),
                 email=email,
