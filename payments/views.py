@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from icecream import ic
 
 from dues.models import Dues
 
@@ -47,12 +46,10 @@ def verify_payment(request, ref):
             [request.user.phone_number],
             f"Hello {request.user.first_name.capitalize()}, your payment of GHS {payment.dues.amount} for {payment.dues.month.strftime('%B')} has been successfully processed.",
         )
-        ic(sms)
         return redirect(f"{reverse('dues:dues_list')}?payment_status=success")
     else:
         sms = send_sms_get(
             [request.user.phone_number],
             f"Hello {request.user.first_name.capitalize()}, there was an error processing your payment. Please contact the Treasurer at support@madrasutannaasuhiyya.com.",
         )
-        ic(sms)
         return redirect(f"{reverse('dues:dues_list')}?payment_status=failure")

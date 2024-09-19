@@ -23,6 +23,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "unfold",
     # Defualt apps:
     "django.contrib.humanize",
     "django.contrib.admin",
