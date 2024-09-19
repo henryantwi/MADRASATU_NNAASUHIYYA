@@ -23,6 +23,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    # Defualt apps:
     "django.contrib.humanize",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -30,9 +31,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    
+    # My apps:
     "dues",
     "account",
     "payments",
+    
+    # Third party apps:
     "admin_honeypot",
     "cloudinary_storage",
     "cloudinary",
@@ -135,7 +140,7 @@ DEYWURO_USERNAME = env("DEYWURO_USERNAME")
 DEYWURO_PASSWORD = env("DEYWURO_PASSWORD")
 DEYWURO_SOURCE = env("DEYWURO_SOURCE")
 
-ACCOUNT_USERNAME_BLACKLIST = ["admin", "accounts", "profile", "payments", "theman"]
+ACCOUNT_USERNAME_BLACKLIST = ["admin", "accounts", "profile", "payments", "webmaster", "dues"]
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
