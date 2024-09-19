@@ -37,7 +37,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     other_name = models.CharField(max_length=30, blank=True)
     phone_number = models.CharField(
         max_length=30, blank=False
-    )  # Ensure phone number is not blank
+    )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)

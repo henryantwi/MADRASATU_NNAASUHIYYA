@@ -11,12 +11,19 @@ from django.contrib.auth import (
 )
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.views import (
+    PasswordResetCompleteView,
+    PasswordResetConfirmView,
+    PasswordResetDoneView,
+    PasswordResetView,
+)
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_protect
 from icecream import ic
 
 from .forms import NotificationSettingsForm, ProfileUpdateForm
 from .models import CustomUser, Profile
+
 
 @login_required
 def faq_view(request):
@@ -156,3 +163,22 @@ def profile_view(request):
             "password_form": password_form,
         },
     )
+
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = "account/password_reset.html"
+    email_template_name = "account/password_reset_email.html"
+    success_url = "done"
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = "account/password_reset_confirm.html"
+    success_url = "/account/reset/done/"
+
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = "account/password_reset_done.html"
+
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = "account/password_reset_complete.html"
