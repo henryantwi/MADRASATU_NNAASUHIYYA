@@ -18,6 +18,7 @@ from django.contrib.auth.views import (
     PasswordResetView,
 )
 from django.shortcuts import redirect, render
+from django.utils.http import urlencode
 from django.views.decorators.csrf import csrf_protect
 from icecream import ic
 
@@ -167,8 +168,17 @@ def profile_view(request):
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = "account/password_reset.html"
-    email_template_name = "account/password_reset_email.html"
+    email_template_name = "account/password_reset_email.txt"
+    html_email_template_name = "account/password_reset_email.html"
     success_url = "done"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["protocol"] = "https" if self.request.is_secure() else "http"
+        context["domain"] = self.request.get_host()
+        if self.request.user.is_authenticated:
+            context["first_name"] = self.request.user.first_name
+        return context
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
