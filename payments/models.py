@@ -3,7 +3,6 @@ import uuid
 
 from django.conf import settings
 from django.db import models
-from icecream import ic
 
 from dues.models import Dues
 
@@ -20,12 +19,11 @@ class Payment(models.Model):
     ref = models.CharField(max_length=255)
     transaction_id = models.CharField(
         max_length=255, blank=True, null=True
-    )  # Store unique transaction ID from the payment gateway
+    )
 
     def verify_payment(self) -> bool:
         paystack = Paystack()
         formatted_total_paid = self.get_formatted_amount()
-        ic("(in Payment models)sent to Paystack:", formatted_total_paid)
         try:
             status, result, id = paystack.verify_payment(self.ref, formatted_total_paid)
             if status and result["amount"] == formatted_total_paid:
@@ -48,7 +46,6 @@ class Payment(models.Model):
         super().save(*args, **kwargs)
 
     def get_formatted_amount(self):
-        ic(type(self.dues.amount))
         return int(float(self.dues.amount) * 100)
 
     def __str__(self):
