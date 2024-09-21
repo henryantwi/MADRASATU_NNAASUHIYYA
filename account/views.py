@@ -1,5 +1,8 @@
 import re
 
+from django.db import IntegrityError
+from icecream import ic
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import (
@@ -9,6 +12,7 @@ from django.contrib.auth import (
     logout,
     update_session_auth_hash,
 )
+from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import (
@@ -17,13 +21,18 @@ from django.contrib.auth.views import (
     PasswordResetDoneView,
     PasswordResetView,
 )
+from django.contrib.sites.shortcuts import get_current_site
+from django.http import HttpResponse, HttpRequest
 from django.shortcuts import redirect, render
-from django.utils.http import urlencode
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_protect
 from icecream import ic
 
 from .forms import NotificationSettingsForm, ProfileUpdateForm
 from .models import CustomUser, Profile
+from .tokens import account_activation_token
 
 
 @login_required
@@ -39,8 +48,13 @@ def login_view(request):
 
         try:
             user = User.objects.get(email=email)
-            user = authenticate(request, username=user.email, password=password)
 
+            if not user.is_active:
+                messages.error(request, "Verify your email to continue")
+                return render(request, 'account/login.html')
+
+            # Authenticate with email and password
+            user = authenticate(request, username=user.email, password=password)
             if user is not None:
                 login(request, user)
                 return redirect("dues:index")
@@ -53,7 +67,7 @@ def login_view(request):
 
 
 @csrf_protect
-def register_view(request):
+def register_view(request: HttpRequest) -> HttpResponse:
     User = get_user_model()
     if request.method == "POST":
         first_name = request.POST.get("first_name")
@@ -94,15 +108,52 @@ def register_view(request):
                 password=password,
             )
             user.save()
-            messages.success(
-                request, "Your account has been created successfully. Login"
+
+            current_site = get_current_site(request)
+            subject = "Activate your Account"
+            message = render_to_string(
+                "account/account_activation_email.html",
+                {
+                    "user": user,
+                    "domain": current_site.domain,
+                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                    "token": account_activation_token.make_token(user),
+                },
             )
-            return redirect("account:login")
+            try:
+                email = EmailMessage(subject, message, to=[user.email])
+                email.send()
+            except Exception as e:
+                user.delete()
+                messages.error(request, f"Error creating account. Please retry {e}")
+                return render(request, "account/register.html")
+
+            # If there are no errors and the account has been created successfully
+            return render(request, "account/register_email_confirm.html")
+        except IntegrityError:
+            messages.error(request, "Email already taken! Please try with a different one.")
         except Exception as e:
             messages.error(request, f"Error creating account: {e}")
             return render(request, "account/register.html")
 
     return render(request, "account/register.html")
+
+
+def account_activate(request, uidb64, token):
+    user = None
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, user.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        messages.success(request, "You have successfully activated your account")
+        return redirect("dues:index")
+    else:
+        return render(request, "account/activation_invalid.html")
 
 
 @login_required

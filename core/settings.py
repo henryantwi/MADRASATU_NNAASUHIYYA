@@ -13,12 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = env("SECRET_KEY")
 
-# if ENVIRONMENT == "development":
-#     DEBUG = True
-# elif ENVIRONMENT == "production":
-#     DEBUG = False
-    
-DEBUG = False
+if ENVIRONMENT == "development":
+    DEBUG = True
+elif ENVIRONMENT == "production":
+    DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -162,3 +160,4 @@ if ENVIRONMENT == 'production' or POSTGRES_LOCALLY is True:
     ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+

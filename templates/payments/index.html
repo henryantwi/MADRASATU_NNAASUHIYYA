@@ -1,10 +1,20 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% load static %}
-{% block title %}MADRASATUNNAASUHIYYA - Home{% endblock %}
+{% block title %}Welcome{% endblock %}
 {% block content %}
 <main id="main" class="main">
-
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-1"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %} 
+    
+    
     <!-- Hero Section -->
     <section class="hero text-center mt-4 py-5">
         <div class="container">
