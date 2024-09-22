@@ -235,6 +235,15 @@ class CustomPasswordResetView(PasswordResetView):
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     template_name = "account/password_reset_confirm.html"
     success_url = "/account/reset/done/"
+    
+    def form_valid(self, form):
+        try:
+            response = super().form_valid(form)
+            return response
+        except Exception as e:
+            # Log the error
+            print(f"Error in CustomPasswordResetConfirmView: {e}")
+            raise e
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
@@ -243,3 +252,12 @@ class CustomPasswordResetDoneView(PasswordResetDoneView):
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = "account/password_reset_complete.html"
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            response = super().get(request, *args, **kwargs)
+            return response
+        except Exception as e:
+            # Log the error
+            print(f"Error in CustomPasswordResetCompleteView: {e}")
+            raise e
