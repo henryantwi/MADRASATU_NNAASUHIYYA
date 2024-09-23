@@ -11,12 +11,6 @@ from django.contrib.auth import (
 )
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.views import (
-    PasswordResetCompleteView,
-    PasswordResetConfirmView,
-    PasswordResetDoneView,
-    PasswordResetView,
-)
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.db import IntegrityError
