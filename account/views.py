@@ -1,8 +1,5 @@
 import re
 
-from django.db import IntegrityError
-from icecream import ic
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import (
@@ -12,7 +9,6 @@ from django.contrib.auth import (
     logout,
     update_session_auth_hash,
 )
-from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import (
@@ -22,7 +18,9 @@ from django.contrib.auth.views import (
     PasswordResetView,
 )
 from django.contrib.sites.shortcuts import get_current_site
-from django.http import HttpResponse, HttpRequest
+from django.core.mail import EmailMessage
+from django.db import IntegrityError
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
@@ -51,7 +49,7 @@ def login_view(request):
 
             if not user.is_active:
                 messages.error(request, "Verify your email to continue")
-                return render(request, 'account/login.html')
+                return render(request, "account/login.html")
 
             # Authenticate with email and password
             user = authenticate(request, username=user.email, password=password)
@@ -131,7 +129,9 @@ def register_view(request: HttpRequest) -> HttpResponse:
             # If there are no errors and the account has been created successfully
             return render(request, "account/register_email_confirm.html")
         except IntegrityError:
-            messages.error(request, "Email already taken! Please try with a different one.")
+            messages.error(
+                request, "Email already taken! Please try with a different one."
+            )
         except Exception as e:
             messages.error(request, f"Error creating account: {e}")
             return render(request, "account/register.html")
@@ -215,66 +215,3 @@ def profile_view(request):
             "password_form": password_form,
         },
     )
-
-
-class CustomPasswordResetView(PasswordResetView):
-    template_name = "account/password_reset.html"
-    email_template_name = "account/password_reset_email.txt"
-    html_email_template_name = "account/password_reset_email.html"
-    success_url = "done"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["protocol"] = "https" if self.request.is_secure() else "http"
-        context["domain"] = self.request.get_host()
-        if self.request.user.is_authenticated:
-            context["first_name"] = self.request.user.first_name
-        return context
-
-
-class CustomPasswordResetConfirmView(PasswordResetConfirmView):
-    template_name = "account/password_reset_confirm.html"
-    success_url = "/account/reset/done/"
-    
-    def form_valid(self, form):
-        try:
-            response = super().form_valid(form)
-            return response
-        except Exception as e:
-            # Log the error
-            print(f"Error in CustomPasswordResetConfirmView: {e}")
-            raise e
-
-
-from django.views.generic import TemplateView
-import logging
-
-logger = logging.getLogger(__name__)
-
-class CustomPasswordResetDoneView(TemplateView):
-    template_name = "account/password_reset_done.html"
-    
-    def get(self, request, *args, **kwargs):
-        logger.info("CustomPasswordResetDoneView GET method called")
-        try:
-            response = super().get(request, *args, **kwargs)
-            return response
-        except Exception as e:
-            # Log the error with more details
-            logger.error(f"Error in CustomPasswordResetDoneView: {e}")
-            import traceback
-            traceback.print_exc()
-            raise e
-
-
-class CustomPasswordResetCompleteView(PasswordResetCompleteView):
-    template_name = "account/password_reset_complete.html"
-    
-    def get(self, request, *args, **kwargs):
-        try:
-            response = super().get(request, *args, **kwargs)
-            return response
-        except Exception as e:
-            # Log the error
-            print(f"Error in CustomPasswordResetCompleteView: {e}")
-            raise e

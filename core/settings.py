@@ -17,13 +17,14 @@ if ENVIRONMENT == "development":
     DEBUG = True
 elif ENVIRONMENT == "production":
     DEBUG = False
+# DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
-    "unfold",
+    # "unfold",
     # Default apps:
     "django.contrib.humanize",
     "django.contrib.admin",
