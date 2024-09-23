@@ -23,14 +23,4 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done/', views.CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
     
-    path(
-        "password_reset/",
-        auth_views.PasswordResetView.as_view(
-            template_name="account/password_reset/password_reset_form.html",
-            success_url="password_reset_email_confirm",
-            email_template_name="account/password_reset/password_reset_email.html",
-            form_class=PwdResetForm,
-        ),
-        name="pwdreset",
-    ),
 ]
