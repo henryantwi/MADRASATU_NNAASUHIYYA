@@ -17,14 +17,15 @@ if ENVIRONMENT == "development":
     DEBUG = True
 elif ENVIRONMENT == "production":
     DEBUG = False
-# DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
-    # "unfold",
+    # Admin Panel Styling
+    "unfold",
+    
     # Default apps:
     "django.contrib.humanize",
     "django.contrib.admin",
@@ -52,7 +53,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # "middleware.LogRequestMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
