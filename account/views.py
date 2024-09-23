@@ -215,3 +215,49 @@ def profile_view(request):
             "password_form": password_form,
         },
     )
+
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = "account/password_reset.html"
+    email_template_name = "account/password_reset_email.txt"
+    html_email_template_name = "account/password_reset_email.html"
+    success_url = "done"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["protocol"] = "https" if self.request.is_secure() else "http"
+        context["domain"] = self.request.get_host()
+        if self.request.user.is_authenticated:
+            context["first_name"] = self.request.user.first_name
+        return context
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = "account/password_reset_confirm.html"
+    success_url = "/account/reset/done/"
+    
+    def form_valid(self, form):
+        try:
+            response = super().form_valid(form)
+            return response
+        except Exception as e:
+            # Log the error
+            print(f"Error in CustomPasswordResetConfirmView: {e}")
+            raise e
+
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = "account/password_reset_done.html"
+
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = "account/password_reset_complete.html"
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            response = super().get(request, *args, **kwargs)
+            return response
+        except Exception as e:
+            # Log the error
+            print(f"Error in CustomPasswordResetCompleteView: {e}")
+            raise e
