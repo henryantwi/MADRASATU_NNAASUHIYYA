@@ -246,8 +246,25 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
             raise e
 
 
-class CustomPasswordResetDoneView(PasswordResetDoneView):
+from django.views.generic import TemplateView
+import logging
+
+logger = logging.getLogger(__name__)
+
+class CustomPasswordResetDoneView(TemplateView):
     template_name = "account/password_reset_done.html"
+    
+    def get(self, request, *args, **kwargs):
+        logger.info("CustomPasswordResetDoneView GET method called")
+        try:
+            response = super().get(request, *args, **kwargs)
+            return response
+        except Exception as e:
+            # Log the error with more details
+            logger.error(f"Error in CustomPasswordResetDoneView: {e}")
+            import traceback
+            traceback.print_exc()
+            raise e
 
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
