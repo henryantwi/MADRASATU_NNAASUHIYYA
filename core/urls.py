@@ -17,7 +17,6 @@ urlpatterns = [
     path("account/", include("account.urls")),
     path("", include("dues.urls")),
     path("payments/", include("payments.urls")),
-    
     # Password reset
     path("reset_password/", CustomPasswordResetView.as_view(), name="reset_password"),
     path(
